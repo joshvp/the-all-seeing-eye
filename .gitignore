@@ -1,0 +1,10 @@
+node_modules
+.tanstack
+.vercel
+screenshots
+artifacts
+attachments
+.grok
+.project_id
+.node_modules.lock
+*.log

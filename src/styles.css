@@ -1,0 +1,375 @@
+@import "tailwindcss";
+
+@theme {
+  --color-void: #0c0b09;
+  --color-ink: #16130f;
+  --color-bone: #e6dccf;
+  --color-ash: #b7aea3;
+  --color-brass: #b08a4f;
+  --font-display: "Cormorant Garamond", "Noto Sans", "Noto Sans SC", "Noto Sans JP", "Noto Sans Devanagari", "Noto Sans Bengali", "Noto Naskh Arabic", Palatino, serif;
+  --font-body: Newsreader, "Noto Sans", "Noto Sans SC", "Noto Sans JP", "Noto Sans Devanagari", "Noto Sans Bengali", "Noto Naskh Arabic", Georgia, serif;
+}
+
+html[data-theme="day"],
+.shell[data-theme="day"] {
+  --color-void: #f3efe6;
+  --color-ink: #e7e1d4;
+  --color-bone: #1c1915;
+  --color-ash: #5c564c;
+  --color-brass: #7a4e22;
+  color-scheme: light;
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    background: var(--color-void);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--color-void);
+    color: var(--color-bone);
+    font-family: var(--font-body);
+    font-size: 1.0625rem;
+    line-height: 1.55;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--color-brass) 50%, var(--color-void));
+    color: var(--color-bone);
+  }
+
+  :focus-visible {
+    outline: 1px solid var(--color-brass);
+    outline-offset: 3px;
+  }
+
+  select option {
+    background: var(--color-void);
+    color: var(--color-bone);
+  }
+}
+
+.card-stage {
+  perspective: 900px;
+}
+
+.card-flip {
+  display: grid;
+  aspect-ratio: 2.75 / 4.75;
+  transform-style: preserve-3d;
+  transition: transform 640ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.card-flip.is-up {
+  transform: rotateY(180deg);
+}
+
+.shell {
+  isolation: isolate;
+  --room-glow: color-mix(in oklab, var(--color-brass) 46%, transparent);
+  --room-glow-soft: color-mix(in oklab, var(--color-brass) 20%, transparent);
+}
+
+.shell[data-theme="day"] {
+  --room-glow: color-mix(in oklab, var(--color-brass) 55%, transparent);
+  --room-glow-soft: color-mix(in oklab, var(--color-brass) 32%, transparent);
+}
+
+.room-glow {
+  position: fixed;
+  inset: -12vh -10vw;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 48% 20% at 50% 6%, var(--room-glow-soft), transparent 72%),
+    radial-gradient(ellipse 42% 28% at 50% 46%, var(--room-glow), transparent 70%),
+    radial-gradient(ellipse 62% 42% at 50% 108%, var(--room-glow-soft), transparent 68%),
+    radial-gradient(ellipse 28% 22% at 18% 70%, var(--room-glow-soft), transparent 72%),
+    radial-gradient(ellipse 28% 22% at 82% 64%, var(--room-glow-soft), transparent 72%);
+  animation: room-drift 7.5s ease-in-out infinite, room-breathe 5.4s ease-in-out infinite;
+}
+
+.card-face,
+.card-back {
+  grid-area: 1 / 1;
+  background: var(--color-ink);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  box-shadow: 0 0 28px color-mix(in oklab, var(--color-brass) 32%, transparent);
+}
+
+.card-face {
+  transform: rotateY(180deg);
+}
+
+.card-photo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.card-turn {
+  height: 100%;
+  transform: rotate(180deg);
+}
+
+.eye-mark {
+  overflow: visible;
+}
+
+.eye-glow {
+  transform-box: view-box;
+  transform-origin: 70px 44px;
+  animation: eye-glow 5.4s ease-in-out infinite;
+}
+
+.eye-mark.is-seeing .eye-float {
+  animation-duration: 3.4s;
+}
+
+.eye-mark.is-seeing .eye-glance {
+  animation-duration: 2.6s;
+}
+
+.eye-mark.is-seeing .eye-rays {
+  animation-duration: 2.2s;
+}
+
+.eye-mark.is-seeing .eye-glow {
+  animation-duration: 1.6s;
+}
+
+.eye-mark.is-seeing .lid-top,
+.eye-mark.is-seeing .lid-bottom {
+  animation-duration: 2.1s;
+}
+
+.seeing-line::before {
+  content: "";
+  display: inline-block;
+  width: 0.42rem;
+  height: 0.42rem;
+  margin-inline-end: 0.65rem;
+  border-radius: 999px;
+  background: var(--color-brass);
+  box-shadow: 0 0 12px var(--color-brass);
+  vertical-align: 0.08em;
+  animation: seeing-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes seeing-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.door-qr {
+  background: #e6dccf;
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--color-brass) 55%, transparent),
+    0 0 28px color-mix(in oklab, var(--color-brass) 18%, transparent);
+}
+
+.door-qr svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.door-qr svg path {
+  stroke: #1c1915;
+}
+
+.eye-float {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: eye-float 7.5s ease-in-out infinite;
+}
+
+.eye-rays {
+  transform-box: view-box;
+  transform-origin: 70px 44px;
+  animation: eye-rays 6.4s ease-in-out infinite;
+}
+
+.eye-glance {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: eye-glance 9.2s ease-in-out infinite;
+}
+
+.pupil {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.lid-top,
+.lid-bottom {
+  transform-box: fill-box;
+  animation: eye-blink 5.4s ease-in-out infinite;
+}
+
+.lid-top {
+  transform-origin: center top;
+}
+
+.lid-bottom {
+  transform-origin: center bottom;
+}
+
+@keyframes room-drift {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  40% {
+    transform: translate(1.6%, -1.1%) scale(1.035);
+  }
+  72% {
+    transform: translate(-1.3%, 0.7%) scale(0.985);
+  }
+}
+
+@keyframes room-breathe {
+  0%,
+  36%,
+  47%,
+  68%,
+  79%,
+  100% {
+    opacity: 1;
+  }
+  41%,
+  43%,
+  73% {
+    opacity: 0.42;
+  }
+}
+
+@keyframes eye-glow {
+  0%,
+  36%,
+  47%,
+  68%,
+  79%,
+  100% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  41%,
+  43%,
+  73% {
+    opacity: 0.08;
+    transform: scale(0.58);
+  }
+}
+
+@keyframes eye-float {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(-2deg);
+  }
+  40% {
+    transform: translate(8px, -3px) rotate(1.6deg);
+  }
+  72% {
+    transform: translate(-6px, 2px) rotate(-1deg);
+  }
+}
+
+@keyframes eye-glance {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  18% {
+    transform: translate(5px, 0.8px);
+  }
+  42% {
+    transform: translate(3.5px, 1.4px);
+  }
+  64% {
+    transform: translate(-5px, 0.5px);
+  }
+  82% {
+    transform: translate(-1.5px, -1px);
+  }
+}
+
+@keyframes eye-blink {
+  0%,
+  36%,
+  47%,
+  68%,
+  79%,
+  100% {
+    transform: scaleY(0.04);
+  }
+  41%,
+  43% {
+    transform: scaleY(1);
+  }
+  73% {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes eye-rays {
+  0%,
+  100% {
+    opacity: 0.28;
+  }
+  50% {
+    opacity: 0.85;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-flip,
+  .eye-float,
+  .eye-glance,
+  .eye-rays,
+  .eye-glow,
+  .seeing-line::before,
+  .room-glow,
+  .lid-top,
+  .lid-bottom {
+    animation: none;
+    transition: none;
+  }
+
+  .room-glow {
+    opacity: 0.8;
+    transform: none;
+  }
+
+  .eye-glow {
+    opacity: 0.4;
+    transform: none;
+  }
+
+  .lid-top,
+  .lid-bottom {
+    transform: scaleY(0.04);
+  }
+}
